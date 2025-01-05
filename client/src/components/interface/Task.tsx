@@ -7,7 +7,7 @@ type TaskProps = {
 };
 
 export default function Task({ task }: TaskProps) {
-  const { setTaskForm, setTaskActive, taskForm } = useTasks();
+  const { setTaskForm, setTaskActive, toggleTaskCompletion, taskForm } = useTasks();
   return (
     <>
       {taskForm.editor?.id == task.id ? (
@@ -23,14 +23,24 @@ export default function Task({ task }: TaskProps) {
           } w-full h-16 bg-white rounded-[8px] flex items-center justify-between p-3 cursor-pointer text-[rgb(85,85,85)] font-bold`}
         >
           <div className="flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgb(223,223,223)" className="w-[32px]">
+            <svg
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleTaskCompletion(task.id);
+              }}
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill={task.isCompleted ? "rgb(186,73,73)" : "rgb(223,223,223)"}
+              className="w-[32px]"
+            >
               <path
                 fillRule="evenodd"
                 d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
                 clipRule="evenodd"
               />
             </svg>
-            {task.title}
+            <span className={task.isCompleted ? "line-through" : ""}>{task.title}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="inline-block text-[rgb(170,170,170)] text-[18px] font-bold mr-[18px] w-10">

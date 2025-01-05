@@ -5,4 +5,5 @@ export type Task = {
   note?: string;
   pomodoros: number;
   isActive?: boolean;
+  isCompleted?: boolean;
 };

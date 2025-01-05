@@ -13,6 +13,7 @@ type ContextValue = {
   editTask: (id: number, title: string, pomodoros: number, note?: string) => void;
   setTaskActive: (id: number) => void;
   getActiveTask: () => Task | undefined;
+  toggleTaskCompletion: (id: number) => void;
   taskForm: TaskFormType;
   setTaskForm: React.Dispatch<React.SetStateAction<TaskFormType>>;
 };
@@ -51,18 +52,22 @@ export function TasksProvider({ children }: PropsWithChildren) {
   }
 
   function setTaskActive(id: number) {
-    const updatedTasks = tasks.map(
-      (task) => (task.id === id ? { ...task, isActive: true } : { ...task, isActive: false }) // Set all other tasks to inactive
-    );
+    const updatedTasks = tasks.map((task) => (task.id === id ? { ...task, isActive: true } : { ...task, isActive: false }));
     setTasks(updatedTasks);
     localStorage.setItem("tasks", JSON.stringify(updatedTasks));
   }
 
   function getActiveTask() {
-    return tasks.find((task) => task.isActive); // Returns the active task or undefined
+    return tasks.find((task) => task.isActive);
   }
 
-  const value: ContextValue = { tasks, addTask, removeTask, editTask, setTaskActive, getActiveTask, taskForm, setTaskForm };
+  function toggleTaskCompletion(id: number) {
+    const updatedTasks = tasks.map((task) => (task.id === id ? { ...task, isCompleted: !task.isCompleted } : task));
+    setTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+  }
+
+  const value: ContextValue = { tasks, addTask, removeTask, editTask, setTaskActive, getActiveTask, toggleTaskCompletion, taskForm, setTaskForm };
 
   return <TasksContext.Provider value={value}>{children}</TasksContext.Provider>;
 }
