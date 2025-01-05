@@ -4,19 +4,20 @@ import { useState } from "react";
 
 type FormDataType = {
   title: string;
+  note?: string;
   pomodoros: number;
 };
 
 export default function TaskForm() {
-  const { addTask, removeTask, editTask, taskForm, setTaskForm, getActiveTask } = useTasks();
+  const { tasks, addTask, removeTask, editTask, taskForm, setTaskForm } = useTasks();
   const { register, handleSubmit } = useForm<FormDataType>();
   const [pomodoros, setPomodoros] = useState<number>(taskForm.editor?.pomodoros || 1);
+  const [showNote, setShowNote] = useState<boolean>(false);
 
-  const activeTask = getActiveTask();
-
-  const onSubmit: SubmitHandler<FormDataType> = ({ title }) => {
-    if (taskForm.editor) return editTask(Number(activeTask?.id), title, pomodoros);
-    addTask(title, pomodoros);
+  const onSubmit: SubmitHandler<FormDataType> = ({ title, note }) => {
+    if (taskForm.editor) return editTask(Number(taskForm.editor.id), title, pomodoros, note);
+    addTask(title, pomodoros, note);
+    console.log(tasks);
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-[8px] text-right mt-3 shadow w-full p-5 flex flex-col h-full relative">
@@ -31,7 +32,9 @@ export default function TaskForm() {
         <h2 className="font-bold text-[rgb(85,85,85)]">دفعات</h2>
         <div className="flex items-center gap-3">
           <input
+            required
             type="number"
+            min={1}
             value={pomodoros}
             onChange={(e) => setPomodoros(e.target.valueAsNumber)}
             className="rounded-[6px] bg-[rgb(239,239,239)] text-[16px] p-[10px] shadow-none border-none text-[rgb(85,85,85)] w-20 font-bold outline-none"
@@ -55,9 +58,23 @@ export default function TaskForm() {
             </button>
           </div>
         </div>
-        <div className="flex items-center justify-center">
-          <button className="flex items-center justify-center text-center cursor-pointer text-[14px] shadow-none border-none text-[rgba(0,0,0,0.4)] font-bold underline">یادداشت</button>
-        </div>
+        {showNote || taskForm.editor?.note ? (
+          <textarea
+            placeholder="یادداشت"
+            defaultValue={taskForm.editor?.note || ""}
+            {...register("note")}
+            className="rounded-[4px] bg-[rgb(239,239,239)] text-[15px] my-2 p-[10px] shadow-none border-none text-[rgb(85,85,85)] w-full font-bold outline-none"
+          ></textarea>
+        ) : (
+          <div className="flex items-center justify-center">
+            <button
+              onClick={() => setShowNote(true)}
+              className="flex items-center justify-center text-center cursor-pointer text-[14px] shadow-none border-none text-[rgba(0,0,0,0.4)] font-bold underline"
+            >
+              یادداشت
+            </button>
+          </div>
+        )}
       </div>
       <div
         className={`p-4 text-left rounded-b-[8px] bg-[rgb(239,239,239)] flex items-center ${
