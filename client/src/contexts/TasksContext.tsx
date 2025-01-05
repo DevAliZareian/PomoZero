@@ -11,8 +11,8 @@ type ContextValue = {
   addTask: (title: string, pomodoros: number, note?: string) => void;
   removeTask: (id: number) => void;
   editTask: (id: number, title: string, pomodoros: number, note?: string) => void;
-  currentTask: number | null;
-  setCurrentTask: React.Dispatch<React.SetStateAction<number | null>>;
+  setTaskActive: (id: number) => void;
+  getActiveTask: () => Task | undefined;
   taskForm: TaskFormType;
   setTaskForm: React.Dispatch<React.SetStateAction<TaskFormType>>;
 };
@@ -24,13 +24,12 @@ export function TasksProvider({ children }: PropsWithChildren) {
     const savedTasks = localStorage.getItem("tasks");
     return savedTasks ? JSON.parse(savedTasks) : [];
   });
-  const [currentTask, setCurrentTask] = useState<number | null>(Number(localStorage.getItem("CurrentTask")));
   const [taskForm, setTaskForm] = useState<TaskFormType>({ show: false, editor: null });
 
   function addTask(title: string, pomodoros: number, note?: string) {
     if (!title) return;
 
-    const newTask: Task = { id: Date.now(), title, note, pomodoros };
+    const newTask: Task = { id: Date.now(), title, note, pomodoros, isActive: false };
     const updatedTasks = [...tasks, newTask];
     setTasks(updatedTasks);
     localStorage.setItem("tasks", JSON.stringify(updatedTasks));
@@ -46,13 +45,24 @@ export function TasksProvider({ children }: PropsWithChildren) {
 
   function editTask(id: number, title: string, pomodoros: number, note?: string) {
     const updatedTasks = tasks.map((task) => (task.id === id ? { ...task, title, pomodoros, note } : task));
-
     setTasks(updatedTasks);
     localStorage.setItem("tasks", JSON.stringify(updatedTasks));
     setTaskForm({ show: false });
   }
 
-  const value: ContextValue = { tasks, addTask, removeTask, editTask, currentTask, setCurrentTask, taskForm, setTaskForm };
+  function setTaskActive(id: number) {
+    const updatedTasks = tasks.map(
+      (task) => (task.id === id ? { ...task, isActive: true } : { ...task, isActive: false }) // Set all other tasks to inactive
+    );
+    setTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+  }
+
+  function getActiveTask() {
+    return tasks.find((task) => task.isActive); // Returns the active task or undefined
+  }
+
+  const value: ContextValue = { tasks, addTask, removeTask, editTask, setTaskActive, getActiveTask, taskForm, setTaskForm };
 
   return <TasksContext.Provider value={value}>{children}</TasksContext.Provider>;
 }

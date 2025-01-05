@@ -8,12 +8,14 @@ type FormDataType = {
 };
 
 export default function TaskForm() {
-  const { addTask, removeTask, editTask, taskForm, setTaskForm, currentTask } = useTasks();
+  const { addTask, removeTask, editTask, taskForm, setTaskForm, getActiveTask } = useTasks();
   const { register, handleSubmit } = useForm<FormDataType>();
   const [pomodoros, setPomodoros] = useState<number>(taskForm.editor?.pomodoros || 1);
 
+  const activeTask = getActiveTask();
+
   const onSubmit: SubmitHandler<FormDataType> = ({ title }) => {
-    if (taskForm.editor) return editTask(Number(currentTask), title, pomodoros);
+    if (taskForm.editor) return editTask(Number(activeTask?.id), title, pomodoros);
     addTask(title, pomodoros);
   };
   return (
@@ -66,7 +68,7 @@ export default function TaskForm() {
           <button
             onClick={(e) => {
               e.preventDefault();
-              removeTask(Number(currentTask));
+              removeTask(Number(taskForm.editor?.id));
             }}
             className="flex items-center justify-center text-center rounded-[4px] cursor-pointer opacity-[0.9] text-[14px] py-[8px] px-[12px] text-[rgb(136,136,136)] font-bold"
           >

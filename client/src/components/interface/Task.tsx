@@ -7,7 +7,7 @@ type TaskProps = {
 };
 
 export default function Task({ task }: TaskProps) {
-  const { currentTask, setCurrentTask, setTaskForm, taskForm } = useTasks();
+  const { setTaskForm, setTaskActive, taskForm } = useTasks();
   return (
     <>
       {taskForm.editor?.id == task.id ? (
@@ -16,10 +16,10 @@ export default function Task({ task }: TaskProps) {
         <div
           key={task.id}
           onClick={() => {
-            localStorage.setItem("CurrentTask", String({ id: task.id, title: task.title })), setCurrentTask(task.id);
+            setTaskActive(task.id);
           }}
           className={`${
-            currentTask === task.id ? "border-[rgb(34,34,34)] border-r-[6px]" : ""
+            task.isActive ? "border-[rgb(34,34,34)] border-r-[6px]" : ""
           } w-full h-16 bg-white rounded-[8px] flex items-center justify-between p-3 cursor-pointer text-[rgb(85,85,85)] font-bold`}
         >
           <div className="flex items-center gap-2">
@@ -39,6 +39,7 @@ export default function Task({ task }: TaskProps) {
             <button
               onClick={(e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 setTaskForm({
                   show: true,
                   editor: { id: task.id, title: task.title, pomodoros: task.pomodoros },

@@ -7,7 +7,7 @@ import TaskForm from "./components/tools/TaskForm";
 import { useTasks } from "./contexts/TasksContext";
 import AddTask from "./components/tools/AddTask";
 import TasksSection from "./components/interface/TasksSection";
-import CurrentTask from "./components/interface/CurrentTask";
+import ActiveTask from "./components/interface/ActiveTask";
 import Box from "./components/interface/Box";
 import Main from "./components/interface/Main";
 import Container from "./components/interface/Container";
@@ -24,7 +24,7 @@ function App() {
           <Timer />
           <Start />
         </Box>
-        <CurrentTask />
+        <ActiveTask />
         <TasksSection>
           <TasksList />
           {taskForm.show && !taskForm.editor ? <TaskForm /> : <AddTask />}
