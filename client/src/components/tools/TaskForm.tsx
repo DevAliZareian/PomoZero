@@ -9,7 +9,7 @@ type FormDataType = {
 };
 
 export default function TaskForm() {
-  const { tasks, addTask, removeTask, editTask, taskForm, setTaskForm } = useTasks();
+  const { addTask, removeTask, editTask, taskForm, setTaskForm } = useTasks();
   const { register, handleSubmit } = useForm<FormDataType>();
   const [pomodoros, setPomodoros] = useState<number>(taskForm.editor?.pomodoros || 1);
   const [showNote, setShowNote] = useState<boolean>(false);
@@ -17,7 +17,6 @@ export default function TaskForm() {
   const onSubmit: SubmitHandler<FormDataType> = ({ title, note }) => {
     if (taskForm.editor) return editTask(Number(taskForm.editor.id), title, pomodoros, note);
     addTask(title, pomodoros, note);
-    console.log(tasks);
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-[8px] text-right mt-3 shadow w-full p-5 flex flex-col h-full relative">
