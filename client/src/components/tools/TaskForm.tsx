@@ -10,7 +10,7 @@ type FormDataType = {
 export default function TaskForm() {
   const { addTask, removeTask, editTask, taskForm, setTaskForm, currentTask } = useTasks();
   const { register, handleSubmit } = useForm<FormDataType>();
-  const [pomodoros, setPomodoros] = useState<number>(1);
+  const [pomodoros, setPomodoros] = useState<number>(taskForm.editor?.pomodoros || 1);
 
   const onSubmit: SubmitHandler<FormDataType> = ({ title }) => {
     if (taskForm.editor) return editTask(Number(currentTask), title, pomodoros);
@@ -30,19 +30,23 @@ export default function TaskForm() {
         <div className="flex items-center gap-3">
           <input
             type="number"
-            defaultValue={taskForm.editor?.pomodoros || pomodoros}
+            value={pomodoros}
             onChange={(e) => setPomodoros(e.target.valueAsNumber)}
             className="rounded-[6px] bg-[rgb(239,239,239)] text-[16px] p-[10px] shadow-none border-none text-[rgb(85,85,85)] w-20 font-bold outline-none"
           />
           <div className="flex items-center gap-1">
             <button
-              onClick={() => setPomodoros((prev) => prev - 1)}
+              onClick={(e) => {
+                e.preventDefault(), setPomodoros((prev) => prev - 1);
+              }}
               className="flex items-center justify-center text-center rounded-[4px] cursor-pointer text-[14px] px-[8px] py-[12px] w-10 bg-white text-[rgb(85,85,85)] shadow border border-[rgb(223,223,223)]"
             >
               <img src="https://pomofocus.io/icons/caret-down.png" className="w-[10px] opacity-[0.6]" />
             </button>
             <button
-              onClick={() => setPomodoros((prev) => prev + 1)}
+              onClick={(e) => {
+                e.preventDefault(), setPomodoros((prev) => prev + 1);
+              }}
               className="flex items-center justify-center text-center rounded-[4px] cursor-pointer text-[14px] px-[8px] py-[12px] w-10 bg-white text-[rgb(85,85,85)] shadow border border-[rgb(223,223,223)]"
             >
               <img src="https://pomofocus.io/icons/caret-up.png" className="w-[10px] opacity-[0.6]" />

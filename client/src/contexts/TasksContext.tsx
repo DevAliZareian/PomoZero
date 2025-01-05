@@ -1,11 +1,5 @@
 import React, { createContext, PropsWithChildren, useContext, useState } from "react";
-
-type Task = {
-  id: number;
-  title: string;
-  note?: string;
-  pomodoros: number;
-};
+import { Task } from "../utils/types";
 
 type TaskFormType = {
   show: boolean;
@@ -30,7 +24,7 @@ export function TasksProvider({ children }: PropsWithChildren) {
     const savedTasks = localStorage.getItem("tasks");
     return savedTasks ? JSON.parse(savedTasks) : [];
   });
-  const [currentTask, setCurrentTask] = useState<number | null>(tasks.length > 0 ? tasks[0].id : null);
+  const [currentTask, setCurrentTask] = useState<number | null>(Number(localStorage.getItem("CurrentTask")));
   const [taskForm, setTaskForm] = useState<TaskFormType>({ show: false, editor: null });
 
   function addTask(title: string, pomodoros: number, note?: string) {
@@ -38,7 +32,6 @@ export function TasksProvider({ children }: PropsWithChildren) {
 
     const newTask: Task = { id: Date.now(), title, note, pomodoros };
     const updatedTasks = [...tasks, newTask];
-
     setTasks(updatedTasks);
     localStorage.setItem("tasks", JSON.stringify(updatedTasks));
     setTaskForm({ show: false });

@@ -9,7 +9,7 @@ import { useTasks } from "./contexts/TasksContext";
 
 function App() {
   const { color } = useMode();
-  const { taskForm, setTaskForm } = useTasks();
+  const { taskForm, setTaskForm, currentTask } = useTasks();
 
   return (
     <div style={{ backgroundColor: color }} className="relative w-full min-h-screen flex flex-col items-center justify-start p-3 transition-colors duration-300 ease-in-out">
@@ -22,7 +22,7 @@ function App() {
             <Start />
           </main>
           <div className="cursor-pointer select-none inline-block text-base opacity-[0.6] mb-1 text-white">#1</div>
-          <div className="text-lg font-extralight text-white">وقت کاره!</div>
+          <div className="text-lg font-extralight text-white">{currentTask ? currentTask : "وقت کاره!"}</div>
           <footer className="w-full flex flex-col items-center justify-center text-white mt-5 mb-11">
             <div className="w-full flex items-center justify-between border-b-2 pb-3 border-b-white">
               <p className="text-lg font-bold">وظایف</p>
@@ -32,7 +32,7 @@ function App() {
             </div>
             <div className="mt-[18px]"></div>
             <Tasks />
-            {taskForm.show ? (
+            {taskForm.show && !taskForm.editor ? (
               <TaskForm />
             ) : (
               <div
