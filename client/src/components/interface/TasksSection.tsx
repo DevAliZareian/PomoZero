@@ -1,7 +1,9 @@
 import { PropsWithChildren, useState } from "react";
+import { useTasks } from "../../contexts/TasksContext";
 
 export default function TasksSection({ children }: PropsWithChildren) {
   const [showTasksOption, setShowTasksOption] = useState<boolean>(false);
+  const { clearTasks } = useTasks();
   return (
     <footer className="w-full flex flex-col items-center justify-center text-white mt-5 mb-11">
       <div className="w-full flex items-center justify-between border-b-2 pb-3 border-b-white">
@@ -15,7 +17,12 @@ export default function TasksSection({ children }: PropsWithChildren) {
           </button>
           {showTasksOption && (
             <div className="absolute left-0 translate-y-[10px] w-52 z-10 rounded-[4px] py-1 shadow pointer-events-auto bg-white">
-              <div className="flex items-center cursor-pointer text-[14px] py-3 px-4 text-black">
+              <div
+                onClick={() => {
+                  clearTasks(), setShowTasksOption(false);
+                }}
+                className="flex items-center cursor-pointer text-[14px] py-3 px-4 text-black"
+              >
                 <img src="https://pomofocus.io/icons/delete-black.png" className="opacity-[0.8] ml-2 w-[0.85rem]" alt="" />
                 حذف تمام کارها
               </div>
