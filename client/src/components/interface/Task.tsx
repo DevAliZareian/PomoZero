@@ -42,7 +42,8 @@ export default function Task({ task }: TaskProps) {
             </div>
             <div className="flex items-center gap-2">
               <span className="inline-block text-[rgb(170,170,170)] text-[18px] font-bold mr-[18px] w-10">
-                <span className="text-[14px] ml-[2px]">{task.pomodoros} /</span>0
+                <span className="text-[14px] ml-[2px]">{task.pomodoros} /</span>
+                {task.actPomodoros || 0}
               </span>
               <button
                 onClick={(e) => {
@@ -50,7 +51,7 @@ export default function Task({ task }: TaskProps) {
                   e.stopPropagation();
                   setTaskForm({
                     show: true,
-                    editor: { id: task.id, title: task.title, pomodoros: task.pomodoros, note: task.note },
+                    editor: { id: task.id, title: task.title, pomodoros: task.pomodoros, note: task.note, actPomodoros: task.actPomodoros },
                   });
                 }}
                 className="flex items-center justify-center text-center rounded-[4px] cursor-pointer bg-white border border-[rgb(223,223,223)] shadow-none text-white p-[5px] min-w-[auto]"

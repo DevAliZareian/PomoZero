@@ -4,6 +4,7 @@ export type Task = {
   title: string;
   note?: string;
   pomodoros: number;
+  actPomodoros?: number;
   isActive?: boolean;
   isCompleted?: boolean;
 };

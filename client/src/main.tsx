@@ -1,4 +1,3 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
@@ -7,13 +6,11 @@ import { TimerProvider } from "./contexts/TimerContext.tsx";
 import { TasksProvider } from "./contexts/TasksContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <ModeProvider>
+  <ModeProvider>
+    <TasksProvider>
       <TimerProvider>
-        <TasksProvider>
-          <App />
-        </TasksProvider>
+        <App />
       </TimerProvider>
-    </ModeProvider>
-  </StrictMode>
+    </TasksProvider>
+  </ModeProvider>
 );

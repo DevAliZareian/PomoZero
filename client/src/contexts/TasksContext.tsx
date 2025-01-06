@@ -3,17 +3,18 @@ import { Task } from "../utils/types";
 
 type TaskFormType = {
   show: boolean;
-  editor?: { id: number; title: string; pomodoros: number; note?: string } | null;
+  editor?: { id: number; title: string; pomodoros: number; note?: string; actPomodoros?: number } | null;
 };
 
 type ContextValue = {
   tasks: Task[];
   addTask: (title: string, pomodoros: number, note?: string) => void;
   removeTask: (id: number) => void;
-  editTask: (id: number, title: string, pomodoros: number, note?: string) => void;
+  editTask: (id: number, title: string, pomodoros: number, note?: string, actPomodoros?: number) => void;
   setTaskActive: (id: number) => void;
   getActiveTask: () => Task | undefined;
   toggleTaskCompletion: (id: number) => void;
+  updateActPomodoros: (id: number, actPomodoros?: number) => void;
   taskForm: TaskFormType;
   setTaskForm: React.Dispatch<React.SetStateAction<TaskFormType>>;
   clearTasks: () => void;
@@ -45,8 +46,8 @@ export function TasksProvider({ children }: PropsWithChildren) {
     setTaskForm({ show: false });
   }
 
-  function editTask(id: number, title: string, pomodoros: number, note?: string) {
-    const updatedTasks = tasks.map((task) => (task.id === id ? { ...task, title, pomodoros, note } : task));
+  function editTask(id: number, title: string, pomodoros: number, note?: string, actPomodoros?: number) {
+    const updatedTasks = tasks.map((task) => (task.id === id ? { ...task, title, pomodoros, note, actPomodoros } : task));
     setTasks(updatedTasks);
     localStorage.setItem("tasks", JSON.stringify(updatedTasks));
     setTaskForm({ show: false });
@@ -68,12 +69,27 @@ export function TasksProvider({ children }: PropsWithChildren) {
     localStorage.setItem("tasks", JSON.stringify(updatedTasks));
   }
 
+  function updateActPomodoros(id: number) {
+    if (!id) return;
+    const updatedTasks = tasks.map((task) =>
+      task.id === id
+        ? {
+            ...task,
+            actPomodoros: (Number(task.actPomodoros) || 0) + 1,
+          }
+        : task
+    );
+    setTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+    console.log(tasks);
+  }
+
   function clearTasks() {
-    localStorage.clear();
+    localStorage.removeItem("tasks");
     setTasks([]);
   }
 
-  const value: ContextValue = { tasks, addTask, removeTask, editTask, setTaskActive, getActiveTask, toggleTaskCompletion, taskForm, setTaskForm, clearTasks };
+  const value: ContextValue = { tasks, addTask, removeTask, editTask, setTaskActive, getActiveTask, toggleTaskCompletion, updateActPomodoros, taskForm, setTaskForm, clearTasks };
 
   return <TasksContext.Provider value={value}>{children}</TasksContext.Provider>;
 }

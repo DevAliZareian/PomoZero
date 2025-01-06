@@ -6,6 +6,7 @@ type FormDataType = {
   title: string;
   note?: string;
   pomodoros: number;
+  actPomodoros: number;
 };
 
 export default function TaskForm() {
@@ -14,8 +15,8 @@ export default function TaskForm() {
   const [pomodoros, setPomodoros] = useState<number>(taskForm.editor?.pomodoros || 1);
   const [showNote, setShowNote] = useState<boolean>(false);
 
-  const onSubmit: SubmitHandler<FormDataType> = ({ title, note }) => {
-    if (taskForm.editor) return editTask(Number(taskForm.editor.id), title, pomodoros, note);
+  const onSubmit: SubmitHandler<FormDataType> = ({ title, note, actPomodoros }) => {
+    if (taskForm.editor) return editTask(Number(taskForm.editor.id), title, pomodoros, note, actPomodoros);
     addTask(title, pomodoros, note);
   };
   return (
@@ -28,7 +29,7 @@ export default function TaskForm() {
         className="outline-none placeholder:italic rounded-[4px] text-[22px] py-[10px] shadow-none border-none text-[rgb(85,85,85)] w-full font-bold"
       />
       <div className="flex flex-col items-start justify-center mt-3 gap-2 flex-grow mb-16">
-        <h2 className="font-bold text-[rgb(85,85,85)]">دفعات</h2>
+        <h2 className="font-bold text-[rgb(85,85,85)]">پومودوروهای برنامه‌ریزی شده{taskForm.editor && <span> / انجام شده</span>}</h2>
         <div className="flex items-center gap-3">
           <input
             required
@@ -38,6 +39,18 @@ export default function TaskForm() {
             onChange={(e) => setPomodoros(e.target.valueAsNumber)}
             className="rounded-[6px] bg-[rgb(239,239,239)] text-[16px] p-[10px] shadow-none border-none text-[rgb(85,85,85)] w-20 font-bold outline-none"
           />
+          {taskForm.editor ? (
+            <>
+              <p className="text-[rgb(170,170,170)]">/</p>
+              <input
+                type="number"
+                min={1}
+                defaultValue={taskForm.editor?.actPomodoros || 0}
+                {...register("actPomodoros")}
+                className="rounded-[6px] bg-[rgb(239,239,239)] text-[16px] p-[10px] shadow-none border-none text-[rgb(187,187,187)] w-20 font-bold outline-none"
+              />{" "}
+            </>
+          ) : null}
           <div className="flex items-center gap-1">
             <button
               onClick={(e) => {
