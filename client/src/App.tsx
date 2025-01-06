@@ -17,6 +17,9 @@ function App() {
 
   return (
     <Container>
+      <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/50 backdrop-blur-sm pt-12 pb-14">
+        <div className="text-[rgb(34,34,34)] rounded-[8px] bg-white relative max-w-sm w-[95%] z-50 translate-y-[20px] shadow overflow-hidden m-auto"></div>
+      </div>
       <Header />
       <Main>
         <Box>
