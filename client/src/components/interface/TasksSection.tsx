@@ -3,7 +3,7 @@ import { useTasks } from "../../contexts/TasksContext";
 
 export default function TasksSection({ children }: PropsWithChildren) {
   const [showTasksOption, setShowTasksOption] = useState<boolean>(false);
-  const { clearTasks, removeCompletedTasks } = useTasks();
+  const { clearTasks, clearActPomodoros, removeCompletedTasks } = useTasks();
   return (
     <footer className="w-full flex flex-col items-center justify-center text-white mt-5 mb-11">
       <div className="w-full flex items-center justify-between border-b-2 pb-3 border-b-white">
@@ -25,6 +25,15 @@ export default function TasksSection({ children }: PropsWithChildren) {
               >
                 <img src="https://pomofocus.io/icons/delete-black.png" className="opacity-[0.8] ml-2 w-[0.85rem]" alt="" />
                 حذف تمام کارها
+              </div>
+              <div
+                onClick={() => {
+                  clearActPomodoros(), setShowTasksOption(false);
+                }}
+                className="flex items-center cursor-pointer text-[14px] py-3 px-4 text-black"
+              >
+                <img src="https://pomofocus.io/icons/delete-black.png" className="opacity-[0.8] ml-2 w-[0.85rem]" alt="" />
+                ریست کردن پومودوروها
               </div>
               <div
                 onClick={() => {
