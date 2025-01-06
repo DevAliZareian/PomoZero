@@ -18,6 +18,7 @@ type ContextValue = {
   taskForm: TaskFormType;
   setTaskForm: React.Dispatch<React.SetStateAction<TaskFormType>>;
   clearTasks: () => void;
+  removeCompletedTasks: () => void;
 };
 
 const TasksContext = createContext<ContextValue | undefined>(undefined);
@@ -89,7 +90,13 @@ export function TasksProvider({ children }: PropsWithChildren) {
     setTasks([]);
   }
 
-  const value: ContextValue = { tasks, addTask, removeTask, editTask, setTaskActive, getActiveTask, toggleTaskCompletion, updateActPomodoros, taskForm, setTaskForm, clearTasks };
+  function removeCompletedTasks() {
+    const updatedTasks = tasks.filter((task) => !task.isCompleted);
+    setTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+  }
+
+  const value: ContextValue = { tasks, addTask, removeTask, editTask, setTaskActive, getActiveTask, toggleTaskCompletion, updateActPomodoros, taskForm, setTaskForm, clearTasks, removeCompletedTasks };
 
   return <TasksContext.Provider value={value}>{children}</TasksContext.Provider>;
 }
