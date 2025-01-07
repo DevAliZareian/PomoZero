@@ -12,9 +12,9 @@ type ModeContextTypes = {
 };
 
 const modeSettings: Record<Mode, { color: string; initialTime: string }> = {
-  work: { color: "#1b263b", initialTime: "00:00:03" },
-  shortRest: { color: "#2a9d8f", initialTime: "00:00:03" },
-  longRest: { color: "#F0885Cff", initialTime: "00:00:03" },
+  work: { color: "#1b263b", initialTime: "00:25:00" },
+  shortRest: { color: "#2a9d8f", initialTime: "00:05:00" },
+  longRest: { color: "#F0885Cff", initialTime: "00:15:00" },
 };
 
 const ModeContext = createContext<ModeContextTypes | undefined>(undefined);

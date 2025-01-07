@@ -32,6 +32,7 @@ export const TimerProvider = ({ children }: PropsWithChildren) => {
     setTime((prevTime) => {
       if (prevTime <= 1) {
         setIsActive(false);
+        sendNotification();
         setTimeout(() => {
           if (mode === "work" && activeTaskId) {
             updateActPomodoros(activeTaskId);
