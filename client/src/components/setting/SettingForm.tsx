@@ -1,12 +1,34 @@
 import ReactSwitch from "react-switch";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+
+type SettingFormDataType = {
+  work: string;
+  shortRest: string;
+  longRest: string;
+  autoStartBreaks: boolean;
+  autoStartPomodoros: boolean;
+  longBreakInterval: number;
+  autoCheckTasks: boolean;
+  autoSwitchTasks: boolean;
+  colorThemes: {
+    work: string;
+    shortRest: string;
+    longRest: string;
+  };
+  hourFormat: "12hrs" | "24hrs";
+  darkModeWhenRunning: boolean;
+};
 
 export default function SettingForm({ setShowSetting }: { setShowSetting: React.Dispatch<React.SetStateAction<boolean>> }) {
   const [checked, setChecked] = useState<boolean>(false);
   const [showSelect, setShowSelect] = useState<boolean>(false);
+  const { register, handleSubmit } = useForm();
+
+  function onSubmit({ work, shortRest, longRest, autoStartBreaks, autoStartPomodoros, longBreakInterval, autoCheckTasks, autoSwitchTasks }: SettingFormDataType) {}
   return (
     <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/50 backdrop-blur-sm pt-12 pb-14 overflow-y-auto">
-      <div className="text-[rgb(34,34,34)] rounded-[8px] bg-white relative max-w-sm w-[95%] z-50 translate-y-[20px] shadow overflow-hidden m-auto">
+      <form onSubmit={handleSubmit(onSubmit)} className="text-[rgb(34,34,34)] rounded-[8px] bg-white relative max-w-sm w-[95%] z-50 translate-y-[20px] shadow overflow-hidden m-auto">
         <img
           onClick={() => setShowSetting(false)}
           className="absolute top-[17px] right-[18px] cursor-pointer w-[14px] opacity-[0.3] z-50"
@@ -153,8 +175,16 @@ export default function SettingForm({ setShowSetting }: { setShowSetting: React.
               </div>
             </div>
           </div>
+          <div className="flex items-center justify-end w-full py-[14px] px-5 text-left rounded-b-lg bg-[rgb(239,239,239)]">
+            <button
+              type="submit"
+              className="flex items-center justify-center text-center rounded-[4px] cursor-pointer shadow text-white py-[8px] px-[12px] text-[14px] bg-[rgb(34,34,34)] border-2 border-[rgb(34,34,34)]"
+            >
+              ذخیره
+            </button>
+          </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

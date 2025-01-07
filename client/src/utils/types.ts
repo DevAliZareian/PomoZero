@@ -13,7 +13,7 @@ export type DefaultSettingsType = {
     shortRest: string;
     longRest: string;
   };
-  hourFormat: "12hrs" | "24hrs"; // Add union type for valid hour formats
+  hourFormat: "12hrs" | "24hrs";
   darkModeWhenRunning: boolean;
 };
 
