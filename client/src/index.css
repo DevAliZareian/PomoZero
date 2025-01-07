@@ -83,3 +83,15 @@ html {
 #font {
   font-family: "Vazirmatn FD";
 }
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(44, 47, 48);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}

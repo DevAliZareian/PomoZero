@@ -1,6 +1,6 @@
 import ProgressBar from "../tools/ProgressBar";
 
-export default function Header() {
+export default function Header({ setShowSetting }: { setShowSetting: React.Dispatch<React.SetStateAction<boolean>> }) {
   return (
     <header className="relative w-full text-white border-b border-b-[rgba(0,0,0,0.1)] pb-2">
       <div className="flex items-center justify-between">
@@ -15,7 +15,10 @@ export default function Header() {
           <p className="font-bold text-2xl">پوموزیرو</p>
         </div>
         <div className="flex items-center">
-          <button className="flex items-center justify-center text-center rounded-[4px] cursor-pointer opacity-[0.9] bg-[rgba(255,255,255,0.2)] shadow-none mr-[10px] text-[13px] border-none text-white p-2 min-w-[auto]">
+          <button
+            onClick={() => setShowSetting(true)}
+            className="flex items-center justify-center text-center rounded-[4px] cursor-pointer opacity-[0.9] bg-[rgba(255,255,255,0.2)] shadow-none mr-[10px] text-[13px] border-none text-white p-2 min-w-[auto]"
+          >
             <img src="https://pomofocus.io/icons/config-white.png" alt="setting" className="w-5" />
           </button>
         </div>

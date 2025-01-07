@@ -1,5 +1,6 @@
-import React, { createContext, PropsWithChildren, useContext, useState, useMemo } from "react";
+import React, { createContext, PropsWithChildren, useContext, useState } from "react";
 import { Mode } from "../utils/types";
+import { useSetting } from "./SettingContext";
 
 type ModeContextTypes = {
   mode: Mode;
@@ -11,22 +12,24 @@ type ModeContextTypes = {
   nextMode: () => void;
 };
 
-const modeSettings: Record<Mode, { color: string; initialTime: string }> = {
-  work: { color: "#1b263b", initialTime: "00:25:00" },
-  shortRest: { color: "#2a9d8f", initialTime: "00:05:00" },
-  longRest: { color: "#F0885Cff", initialTime: "00:15:00" },
+const modeSettings: Record<Mode, { color: string }> = {
+  work: { color: "#1b263b" },
+  shortRest: { color: "#2a9d8f" },
+  longRest: { color: "#F0885Cff" },
 };
 
 const ModeContext = createContext<ModeContextTypes | undefined>(undefined);
 
 export default function ModeProvider({ children }: PropsWithChildren) {
+  const { defaultSettings } = useSetting();
   const [mode, setMode] = useState<Mode>("work");
   const [pomodoroCounter, setPomodoroCounter] = useState<number>(() => {
     const storedCounter = localStorage.getItem("pomodoroCounter");
     return Number(storedCounter) || 1;
   });
 
-  const { color, initialTime } = useMemo(() => modeSettings[mode], [mode]);
+  const { color } = modeSettings[mode];
+  const initialTime = defaultSettings[mode];
 
   const nextMode = () => {
     setMode((prevMode) => {
@@ -35,7 +38,7 @@ export default function ModeProvider({ children }: PropsWithChildren) {
         setPomodoroCounter(newCounter);
         localStorage.setItem("pomodoroCounter", newCounter.toString());
 
-        return newCounter % 4 === 0 ? "longRest" : "shortRest";
+        return newCounter % defaultSettings.longBreakInterval === 0 ? "longRest" : "shortRest";
       }
 
       if (prevMode === "shortRest" || prevMode === "longRest") {
@@ -51,7 +54,17 @@ export default function ModeProvider({ children }: PropsWithChildren) {
     localStorage.setItem("pomodoroCounter", "1");
   }
 
-  return <ModeContext.Provider value={{ mode, color, initialTime, pomodoroCounter, resetPomodoroCounter, setMode, nextMode }}>{children}</ModeContext.Provider>;
+  const value = {
+    mode,
+    color,
+    initialTime,
+    pomodoroCounter,
+    resetPomodoroCounter,
+    setMode,
+    nextMode,
+  };
+
+  return <ModeContext.Provider value={value}>{children}</ModeContext.Provider>;
 }
 
 export function useMode() {
