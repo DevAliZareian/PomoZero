@@ -1,4 +1,5 @@
 export type Mode = "work" | "shortRest" | "longRest";
+
 export type DefaultSettingsType = {
   work: string;
   shortRest: string;

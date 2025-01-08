@@ -1,8 +1,10 @@
 import ReactSwitch from "react-switch";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { DefaultSettingsType } from "../../utils/types";
 import { useSetting } from "../../contexts/SettingContext";
+import { transformSettingsToFormValues } from "../../utils/settingUtils";
+import { DEFAULT_SETTINGS } from "../../utils/constants";
 
 type SettingFormDataType = DefaultSettingsType;
 
@@ -10,46 +12,25 @@ export default function SettingForm({ setShowSetting }: { setShowSetting: React.
   const [showSelect, setShowSelect] = useState<boolean>(false);
   const { settings, updateSettings, setDefaultSettings } = useSetting();
   const { register, handleSubmit, control, reset } = useForm<SettingFormDataType>({
-    defaultValues: {
-      work: String(parseInt(settings.work.split(":")[1], 10)),
-      shortRest: String(parseInt(settings.shortRest.split(":")[1], 10)),
-      longRest: String(parseInt(settings.longRest.split(":")[1], 10)),
-      autoStartBreaks: settings.autoStartBreaks,
-      autoStartPomodoros: settings.autoStartPomodoros,
-      longBreakInterval: settings.longBreakInterval,
-      autoCheckTasks: settings.autoCheckTasks,
-      autoSwitchTasks: settings.autoSwitchTasks,
-      darkModeWhenRunning: settings.darkModeWhenRunning,
-    },
+    defaultValues: transformSettingsToFormValues(settings),
   });
 
-  useEffect(() => {
-    reset({
-      work: String(parseInt(settings.work.split(":")[1], 10)),
-      shortRest: String(parseInt(settings.shortRest.split(":")[1], 10)),
-      longRest: String(parseInt(settings.longRest.split(":")[1], 10)),
-      autoStartBreaks: settings.autoStartBreaks,
-      autoStartPomodoros: settings.autoStartPomodoros,
-      longBreakInterval: settings.longBreakInterval,
-      autoCheckTasks: settings.autoCheckTasks,
-      autoSwitchTasks: settings.autoSwitchTasks,
-      darkModeWhenRunning: settings.darkModeWhenRunning,
-    });
-  }, [settings, reset]);
+  const handleReset = () => {
+    setDefaultSettings();
+    reset(transformSettingsToFormValues(DEFAULT_SETTINGS));
+  };
 
-  const onSubmit = ({ work, shortRest, longRest, autoStartBreaks, autoStartPomodoros, longBreakInterval, autoCheckTasks, autoSwitchTasks, darkModeWhenRunning }: SettingFormDataType) => {
-    updateSettings({
-      work: `00:${String(work).padStart(2, "0")}:00`,
-      shortRest: `00:${String(shortRest).padStart(2, "0")}:00`,
-      longRest: `00:${String(longRest).padStart(2, "0")}:00`,
-      autoStartBreaks,
-      autoStartPomodoros,
-      longBreakInterval,
-      autoCheckTasks,
-      autoSwitchTasks,
-      darkModeWhenRunning,
-    });
-    console.log(settings);
+  const formatTime = (time: string) => `00:${String(time).padStart(2, "0")}:00`;
+
+  const onSubmit = (formData: SettingFormDataType) => {
+    const updatedSettings = {
+      ...formData,
+      work: formatTime(formData.work),
+      shortRest: formatTime(formData.shortRest),
+      longRest: formatTime(formData.longRest),
+    };
+
+    updateSettings(updatedSettings);
     setShowSetting(false);
   };
   return (
@@ -227,11 +208,7 @@ export default function SettingForm({ setShowSetting }: { setShowSetting: React.
           </div>
           <div className="flex items-center justify-end gap-2 w-full py-[14px] px-5 text-left rounded-b-lg bg-[rgb(239,239,239)]">
             <button
-              onClick={(e) => {
-                e.preventDefault();
-                setDefaultSettings();
-                console.log("dasd");
-              }}
+              onClick={handleReset}
               className="flex items-center justify-center text-center rounded-[4px] cursor-pointer opacity-[0.9] text-[14px] py-[8px] px-[12px] text-[rgb(136,136,136)] font-bold"
             >
               تنظیمات پیش‌فرض

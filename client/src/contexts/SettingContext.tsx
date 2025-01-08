@@ -1,24 +1,11 @@
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 import { DefaultSettingsType } from "../utils/types";
+import { DEFAULT_SETTINGS } from "../utils/constants";
 
 type SettingContextType = {
   settings: DefaultSettingsType;
   updateSettings: (settings: Partial<DefaultSettingsType>) => void;
   setDefaultSettings: () => void;
-};
-
-const DEFAULT_SETTINGS: DefaultSettingsType = {
-  work: "00:25:00",
-  shortRest: "00:05:00",
-  longRest: "00:15:00",
-  autoStartBreaks: false,
-  autoStartPomodoros: false,
-  longBreakInterval: 4,
-  autoCheckTasks: false,
-  autoSwitchTasks: false,
-  colorThemes: { work: "#FF5733", shortRest: "#33FF57", longRest: "#3357FF" },
-  hourFormat: "24hrs",
-  darkModeWhenRunning: false,
 };
 
 const LOCAL_STORAGE_KEY = "DefaultSettings";
