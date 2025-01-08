@@ -59,7 +59,7 @@ export default function SettingForm({ setShowSetting }: { setShowSetting: React.
                     <label className="text-[14px] text-[rgb(170,170,170)] font-bold mb-1">پومودورو</label>
                     <input
                       {...register("work")}
-                      type="text"
+                      type="number"
                       min={0}
                       step={1}
                       className="outline-none rounded-[6px] bg-[rgb(239,239,239)] text-base p-[10px] shadow-none border-none text-[rgb(85,85,85)] w-full"
@@ -69,7 +69,7 @@ export default function SettingForm({ setShowSetting }: { setShowSetting: React.
                     <label className="text-[14px] text-[rgb(170,170,170)] font-bold mb-1">استراحت کوتاه</label>
                     <input
                       {...register("shortRest")}
-                      type="text"
+                      type="number"
                       min={0}
                       step={1}
                       className="outline-none rounded-[6px] bg-[rgb(239,239,239)] text-base p-[10px] shadow-none border-none text-[rgb(85,85,85)] w-full"
@@ -79,7 +79,7 @@ export default function SettingForm({ setShowSetting }: { setShowSetting: React.
                     <label className="text-[14px] text-[rgb(170,170,170)] font-bold mb-1">مرخصی</label>
                     <input
                       {...register("longRest")}
-                      type="text"
+                      type="number"
                       min={0}
                       step={1}
                       className="outline-none rounded-[6px] bg-[rgb(239,239,239)] text-base p-[10px] shadow-none border-none text-[rgb(85,85,85)] w-full"
