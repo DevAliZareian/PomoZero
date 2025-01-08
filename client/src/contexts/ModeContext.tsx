@@ -21,7 +21,7 @@ const modeSettings: Record<Mode, { color: string }> = {
 const ModeContext = createContext<ModeContextTypes | undefined>(undefined);
 
 export default function ModeProvider({ children }: PropsWithChildren) {
-  const { defaultSettings } = useSetting();
+  const { settings } = useSetting();
   const [mode, setMode] = useState<Mode>("work");
   const [pomodoroCounter, setPomodoroCounter] = useState<number>(() => {
     const storedCounter = localStorage.getItem("pomodoroCounter");
@@ -29,7 +29,7 @@ export default function ModeProvider({ children }: PropsWithChildren) {
   });
 
   const { color } = modeSettings[mode];
-  const initialTime = defaultSettings[mode];
+  const initialTime = settings[mode];
 
   const nextMode = () => {
     setMode((prevMode) => {
@@ -38,7 +38,7 @@ export default function ModeProvider({ children }: PropsWithChildren) {
         setPomodoroCounter(newCounter);
         localStorage.setItem("pomodoroCounter", newCounter.toString());
 
-        return newCounter % defaultSettings.longBreakInterval === 0 ? "longRest" : "shortRest";
+        return newCounter % settings.longBreakInterval === 0 ? "longRest" : "shortRest";
       }
 
       if (prevMode === "shortRest" || prevMode === "longRest") {

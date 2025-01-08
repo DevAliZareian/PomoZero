@@ -1,31 +1,57 @@
 import ReactSwitch from "react-switch";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { DefaultSettingsType } from "../../utils/types";
+import { useSetting } from "../../contexts/SettingContext";
 
-type SettingFormDataType = {
-  work: string;
-  shortRest: string;
-  longRest: string;
-  autoStartBreaks: boolean;
-  autoStartPomodoros: boolean;
-  longBreakInterval: number;
-  autoCheckTasks: boolean;
-  autoSwitchTasks: boolean;
-  colorThemes: {
-    work: string;
-    shortRest: string;
-    longRest: string;
-  };
-  hourFormat: "12hrs" | "24hrs";
-  darkModeWhenRunning: boolean;
-};
+type SettingFormDataType = DefaultSettingsType;
 
 export default function SettingForm({ setShowSetting }: { setShowSetting: React.Dispatch<React.SetStateAction<boolean>> }) {
-  const [checked, setChecked] = useState<boolean>(false);
   const [showSelect, setShowSelect] = useState<boolean>(false);
-  const { register, handleSubmit } = useForm();
+  const { settings, updateSettings, setDefaultSettings } = useSetting();
+  const { register, handleSubmit, control, reset } = useForm<SettingFormDataType>({
+    defaultValues: {
+      work: String(parseInt(settings.work.split(":")[1], 10)),
+      shortRest: String(parseInt(settings.shortRest.split(":")[1], 10)),
+      longRest: String(parseInt(settings.longRest.split(":")[1], 10)),
+      autoStartBreaks: settings.autoStartBreaks,
+      autoStartPomodoros: settings.autoStartPomodoros,
+      longBreakInterval: settings.longBreakInterval,
+      autoCheckTasks: settings.autoCheckTasks,
+      autoSwitchTasks: settings.autoSwitchTasks,
+      darkModeWhenRunning: settings.darkModeWhenRunning,
+    },
+  });
 
-  function onSubmit({ work, shortRest, longRest, autoStartBreaks, autoStartPomodoros, longBreakInterval, autoCheckTasks, autoSwitchTasks }: SettingFormDataType) {}
+  useEffect(() => {
+    reset({
+      work: String(parseInt(settings.work.split(":")[1], 10)),
+      shortRest: String(parseInt(settings.shortRest.split(":")[1], 10)),
+      longRest: String(parseInt(settings.longRest.split(":")[1], 10)),
+      autoStartBreaks: settings.autoStartBreaks,
+      autoStartPomodoros: settings.autoStartPomodoros,
+      longBreakInterval: settings.longBreakInterval,
+      autoCheckTasks: settings.autoCheckTasks,
+      autoSwitchTasks: settings.autoSwitchTasks,
+      darkModeWhenRunning: settings.darkModeWhenRunning,
+    });
+  }, [settings, reset]);
+
+  const onSubmit = ({ work, shortRest, longRest, autoStartBreaks, autoStartPomodoros, longBreakInterval, autoCheckTasks, autoSwitchTasks, darkModeWhenRunning }: SettingFormDataType) => {
+    updateSettings({
+      work: `00:${String(work).padStart(2, "0")}:00`,
+      shortRest: `00:${String(shortRest).padStart(2, "0")}:00`,
+      longRest: `00:${String(longRest).padStart(2, "0")}:00`,
+      autoStartBreaks,
+      autoStartPomodoros,
+      longBreakInterval,
+      autoCheckTasks,
+      autoSwitchTasks,
+      darkModeWhenRunning,
+    });
+    console.log(settings);
+    setShowSetting(false);
+  };
   return (
     <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/50 backdrop-blur-sm pt-12 pb-14 overflow-y-auto">
       <form onSubmit={handleSubmit(onSubmit)} className="text-[rgb(34,34,34)] rounded-[8px] bg-white relative max-w-sm w-[95%] z-50 translate-y-[20px] shadow overflow-hidden m-auto">
@@ -50,15 +76,33 @@ export default function SettingForm({ setShowSetting }: { setShowSetting: React.
                 <div className="flex justify-between mt-[10px]">
                   <div className="pl-2">
                     <label className="text-[14px] text-[rgb(170,170,170)] font-bold mb-1">پومودورو</label>
-                    <input type="number" min={0} step={1} className="outline-none rounded-[6px] bg-[rgb(239,239,239)] text-base p-[10px] shadow-none border-none text-[rgb(85,85,85)] w-full" />
+                    <input
+                      {...register("work")}
+                      type="text"
+                      min={0}
+                      step={1}
+                      className="outline-none rounded-[6px] bg-[rgb(239,239,239)] text-base p-[10px] shadow-none border-none text-[rgb(85,85,85)] w-full"
+                    />
                   </div>
                   <div className="pl-2">
                     <label className="text-[14px] text-[rgb(170,170,170)] font-bold mb-1">استراحت کوتاه</label>
-                    <input type="number" min={0} step={1} className="outline-none rounded-[6px] bg-[rgb(239,239,239)] text-base p-[10px] shadow-none border-none text-[rgb(85,85,85)] w-full" />
+                    <input
+                      {...register("shortRest")}
+                      type="text"
+                      min={0}
+                      step={1}
+                      className="outline-none rounded-[6px] bg-[rgb(239,239,239)] text-base p-[10px] shadow-none border-none text-[rgb(85,85,85)] w-full"
+                    />
                   </div>
                   <div>
                     <label className="text-[14px] text-[rgb(170,170,170)] font-bold mb-1">مرخصی</label>
-                    <input type="number" min={0} step={1} className="outline-none rounded-[6px] bg-[rgb(239,239,239)] text-base p-[10px] shadow-none border-none text-[rgb(85,85,85)] w-full" />
+                    <input
+                      {...register("longRest")}
+                      type="text"
+                      min={0}
+                      step={1}
+                      className="outline-none rounded-[6px] bg-[rgb(239,239,239)] text-base p-[10px] shadow-none border-none text-[rgb(85,85,85)] w-full"
+                    />
                   </div>
                 </div>
               </div>
@@ -67,7 +111,7 @@ export default function SettingForm({ setShowSetting }: { setShowSetting: React.
                   <div className="inline-block">
                     <span className="text-[rgb(85,85,85)] font-bold flex items-center">شروع خودکار استراحت‌ها</span>
                   </div>
-                  <ReactSwitch checked={checked} onChange={(e) => setChecked(e.valueOf())} />
+                  <Controller name="autoStartBreaks" control={control} render={({ field }) => <ReactSwitch checked={field.value || false} onChange={field.onChange} />} />
                 </div>
               </div>
               <div className="py-3 min-h-8 flex flex-col">
@@ -75,7 +119,7 @@ export default function SettingForm({ setShowSetting }: { setShowSetting: React.
                   <div className="inline-block">
                     <span className="text-[rgb(85,85,85)] font-bold flex items-center">شروع خودکار پومودوروها</span>
                   </div>
-                  <ReactSwitch checked={checked} onChange={(e) => setChecked(e.valueOf())} />
+                  <Controller name="autoStartPomodoros" control={control} render={({ field }) => <ReactSwitch checked={field.value || false} onChange={field.onChange} />} />
                 </div>
               </div>
               <div className="py-3 min-h-8 flex flex-col">
@@ -83,7 +127,13 @@ export default function SettingForm({ setShowSetting }: { setShowSetting: React.
                   <div className="inline-block">
                     <span className="text-[rgb(85,85,85)] font-bold flex items-center">چند پومودورو تا مرخصی</span>
                   </div>
-                  <input type="number" min={0} step={1} className="outline-none rounded-[6px] bg-[rgb(239,239,239)] text-base p-[10px] shadow-none border-none text-[rgb(85,85,85)] w-[4.5rem]" />
+                  <input
+                    {...register("longBreakInterval")}
+                    type="number"
+                    min={0}
+                    step={1}
+                    className="outline-none rounded-[6px] bg-[rgb(239,239,239)] text-base p-[10px] shadow-none border-none text-[rgb(85,85,85)] w-[4.5rem]"
+                  />
                 </div>
               </div>
             </div>
@@ -98,7 +148,7 @@ export default function SettingForm({ setShowSetting }: { setShowSetting: React.
                   <div className="inline-block">
                     <span className="text-[rgb(85,85,85)] font-bold flex items-center">تایید خودکار وظایف</span>
                   </div>
-                  <ReactSwitch checked={checked} onChange={(e) => setChecked(e.valueOf())} />
+                  <Controller name="autoCheckTasks" control={control} render={({ field }) => <ReactSwitch checked={field.value || false} onChange={field.onChange} />} />
                 </div>
               </div>
               <div className="py-3 min-h-8 flex flex-col">
@@ -106,7 +156,7 @@ export default function SettingForm({ setShowSetting }: { setShowSetting: React.
                   <div className="inline-block">
                     <span className="text-[rgb(85,85,85)] font-bold flex items-center">کنترل خودکار وظایف</span>
                   </div>
-                  <ReactSwitch checked={checked} onChange={(e) => setChecked(e.valueOf())} />
+                  <Controller name="autoSwitchTasks" control={control} render={({ field }) => <ReactSwitch checked={field.value || false} onChange={field.onChange} />} />
                 </div>
               </div>
             </div>
@@ -159,7 +209,7 @@ export default function SettingForm({ setShowSetting }: { setShowSetting: React.
                   <div className="inline-block">
                     <span className="text-[rgb(85,85,85)] font-bold flex items-center">فعال شدن حالت تیره هنگام اجرا</span>
                   </div>
-                  <ReactSwitch checked={checked} onChange={(e) => setChecked(e.valueOf())} />
+                  <Controller name="darkModeWhenRunning" control={control} render={({ field }) => <ReactSwitch checked={field.value || false} onChange={field.onChange} />} />
                 </div>
               </div>
               <div className="py-3 min-h-8 flex flex-col">
@@ -175,7 +225,17 @@ export default function SettingForm({ setShowSetting }: { setShowSetting: React.
               </div>
             </div>
           </div>
-          <div className="flex items-center justify-end w-full py-[14px] px-5 text-left rounded-b-lg bg-[rgb(239,239,239)]">
+          <div className="flex items-center justify-end gap-2 w-full py-[14px] px-5 text-left rounded-b-lg bg-[rgb(239,239,239)]">
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                setDefaultSettings();
+                console.log("dasd");
+              }}
+              className="flex items-center justify-center text-center rounded-[4px] cursor-pointer opacity-[0.9] text-[14px] py-[8px] px-[12px] text-[rgb(136,136,136)] font-bold"
+            >
+              تنظیمات پیش‌فرض
+            </button>
             <button
               type="submit"
               className="flex items-center justify-center text-center rounded-[4px] cursor-pointer shadow text-white py-[8px] px-[12px] text-[14px] bg-[rgb(34,34,34)] border-2 border-[rgb(34,34,34)]"
