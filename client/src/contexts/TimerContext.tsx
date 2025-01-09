@@ -2,6 +2,7 @@ import { createContext, useContext, useMemo, useState, useEffect, useCallback, P
 import { parseTime, sendNotification } from "../utils/helpers";
 import { useMode } from "../contexts/ModeContext";
 import { useTasks } from "./TasksContext";
+import { useSetting } from "./SettingContext";
 
 type TimerContextType = {
   time: number;
@@ -14,6 +15,7 @@ const TimerContext = createContext<TimerContextType | undefined>(undefined);
 
 export const TimerProvider = ({ children }: PropsWithChildren) => {
   const { initialTime, mode, nextMode } = useMode();
+  const { settings } = useSetting();
   const { updateActPomodoros, getActiveTask, tasks } = useTasks();
   const parsedInitialTime = useMemo(() => parseTime(initialTime), [initialTime]);
 
@@ -32,7 +34,7 @@ export const TimerProvider = ({ children }: PropsWithChildren) => {
     setTime((prevTime) => {
       if (prevTime <= 1) {
         setIsActive(false);
-        sendNotification();
+        sendNotification("test", "test");
         setTimeout(() => {
           if (mode === "work" && activeTaskId) {
             updateActPomodoros(activeTaskId);
@@ -63,7 +65,11 @@ export const TimerProvider = ({ children }: PropsWithChildren) => {
   }, [parsedInitialTime]);
 
   useEffect(() => {
-    setIsActive(false);
+    if ((mode !== "work" && settings.autoStartBreaks) || (mode === "work" && settings.autoStartPomodoros)) {
+      setIsActive(true);
+    } else {
+      setIsActive(false);
+    }
     resetTimer();
   }, [mode]);
 

@@ -1,5 +1,6 @@
 import React, { createContext, PropsWithChildren, useContext, useState } from "react";
 import { Task } from "../utils/types";
+import { useSetting } from "./SettingContext";
 
 type TaskFormType = {
   show: boolean;
@@ -30,6 +31,7 @@ export function TasksProvider({ children }: PropsWithChildren) {
     return savedTasks ? JSON.parse(savedTasks) : [];
   });
   const [taskForm, setTaskForm] = useState<TaskFormType>({ show: false, editor: null });
+  const { settings } = useSetting();
 
   function addTask(title: string, pomodoros: number, note?: string) {
     if (!title) return;
@@ -73,17 +75,25 @@ export function TasksProvider({ children }: PropsWithChildren) {
 
   function updateActPomodoros(id: number) {
     if (!id) return;
-    const updatedTasks = tasks.map((task) =>
-      task.id === id
-        ? {
-            ...task,
-            actPomodoros: (Number(task.actPomodoros) || 0) + 1,
-          }
-        : task
-    );
+
+    const updatedTasks = tasks.map((task) => {
+      if (task.id === id) {
+        const newActPomodoros = (Number(task.actPomodoros) || 0) + 1;
+
+        if (settings.autoCheckTasks && newActPomodoros == task.pomodoros) {
+          toggleTaskCompletion(task.id);
+        }
+
+        return {
+          ...task,
+          actPomodoros: newActPomodoros,
+        };
+      }
+      return task;
+    });
+
     setTasks(updatedTasks);
     localStorage.setItem("tasks", JSON.stringify(updatedTasks));
-    console.log(tasks);
   }
 
   function clearTasks() {
