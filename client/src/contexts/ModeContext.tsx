@@ -12,12 +12,6 @@ type ModeContextTypes = {
   nextMode: () => void;
 };
 
-const modeSettings: Record<Mode, { color: string }> = {
-  work: { color: "#1b263b" },
-  shortRest: { color: "#2a9d8f" },
-  longRest: { color: "#F0885Cff" },
-};
-
 const ModeContext = createContext<ModeContextTypes | undefined>(undefined);
 
 export default function ModeProvider({ children }: PropsWithChildren) {
@@ -28,7 +22,7 @@ export default function ModeProvider({ children }: PropsWithChildren) {
     return Number(storedCounter) || 1;
   });
 
-  const { color } = modeSettings[mode];
+  const color = settings[`${mode}Color`]; // Dynamically fetch color based on the current mode
   const initialTime = settings[mode];
 
   const nextMode = () => {

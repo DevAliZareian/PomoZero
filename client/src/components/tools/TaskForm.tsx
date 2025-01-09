@@ -44,7 +44,7 @@ export default function TaskForm() {
               <p className="text-[rgb(170,170,170)]">/</p>
               <input
                 type="number"
-                min={1}
+                min={0}
                 defaultValue={taskForm.editor?.actPomodoros || 0}
                 {...register("actPomodoros")}
                 className="rounded-[6px] bg-[rgb(239,239,239)] text-[16px] p-[10px] shadow-none border-none text-[rgb(187,187,187)] w-20 font-bold outline-none"

@@ -9,11 +9,9 @@ export type DefaultSettingsType = {
   longBreakInterval: number;
   autoCheckTasks: boolean;
   autoSwitchTasks: boolean;
-  colorThemes: {
-    work: string;
-    shortRest: string;
-    longRest: string;
-  };
+  workColor: string;
+  shortRestColor: string;
+  longRestColor: string;
   hourFormat: "12hrs" | "24hrs";
   darkModeWhenRunning: boolean;
 };

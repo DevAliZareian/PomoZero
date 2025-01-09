@@ -9,7 +9,9 @@ export const DEFAULT_SETTINGS: DefaultSettingsType = {
   longBreakInterval: 4,
   autoCheckTasks: false,
   autoSwitchTasks: false,
-  colorThemes: { work: "#FF5733", shortRest: "#33FF57", longRest: "#3357FF" },
+  workColor: "#FF5733",
+  shortRestColor: "#33FF57",
+  longRestColor: "#3357FF",
   hourFormat: "24hrs",
   darkModeWhenRunning: false,
 };
