@@ -1,7 +1,10 @@
 import { useMode } from "../../contexts/ModeContext";
+import { useDarkMode } from "../../hooks/useDarkMode";
 import { Mode } from "../../utils/types";
 
 export default function ModeSelector() {
+  const isDarkMode = useDarkMode();
+
   const switches: { state: Mode; text: string }[] = [
     { state: "work", text: "پومودورو" },
     { state: "shortRest", text: "استراحت کوتاه" },
@@ -9,11 +12,15 @@ export default function ModeSelector() {
   ];
 
   return (
-    <div className="inline-flex items-center justify-center gap-4">
-      {switches.map((switchProps) => (
-        <Switch key={switchProps.state} {...switchProps} />
-      ))}
-    </div>
+    <>
+      {!isDarkMode && (
+        <div className="inline-flex items-center justify-center gap-4">
+          {switches.map((switchProps) => (
+            <Switch key={switchProps.state} {...switchProps} />
+          ))}
+        </div>
+      )}
+    </>
   );
 }
 
