@@ -34,9 +34,9 @@ function usePomodoroTimeStats(): PomodoroTimeStats {
       const totalPomodoros = getPomodorosSum("pomodoros") - getPomodorosSum("actPomodoros") < 0 ? 0 : getPomodorosSum("pomodoros") - getPomodorosSum("actPomodoros");
 
       // Total Pomodoro and short rest time in minutes
-      let pomodoroEndTimeInMinutes = pomodoroTimeInMinutes * totalPomodoros + shortRestTimeInMinutes * totalPomodoros;
+      let pomodoroEndTimeInMinutes = pomodoroTimeInMinutes * totalPomodoros + shortRestTimeInMinutes;
       if (pomodoroCounter % settings.longBreakInterval === 0) {
-        pomodoroEndTimeInMinutes = pomodoroTimeInMinutes * totalPomodoros + shortRestTimeInMinutes + longRestTimeInMinutes * totalPomodoros; // Long rest interval
+        pomodoroEndTimeInMinutes = pomodoroTimeInMinutes * totalPomodoros + shortRestTimeInMinutes + longRestTimeInMinutes; // Long rest interval
       }
 
       // Add the minutes to the current time
