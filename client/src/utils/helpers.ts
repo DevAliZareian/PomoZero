@@ -36,3 +36,16 @@ export const sendNotification = (title: string, body: string): void => {
     console.warn("Notifications have been denied. Please enable them in your browser settings.");
   }
 };
+
+export function openPopupWindow(path: string, title: string, width: number, height: number) {
+  const url = `${window.location.origin}${path}`;
+  const left = (window.innerWidth - width) / 2 + window.screenX;
+  const top = (window.innerHeight - height) / 2 + window.screenY;
+
+  const popup = window.open(url, title, `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=yes`);
+  if (popup) {
+    popup.focus();
+  } else {
+    console.error("Popup blocked. Please allow popups for this site.");
+  }
+}
