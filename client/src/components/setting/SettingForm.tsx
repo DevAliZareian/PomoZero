@@ -6,6 +6,7 @@ import { useSetting } from "../../contexts/SettingContext";
 import { transformSettingsToFormValues } from "../../utils/settingUtils";
 import { DEFAULT_SETTINGS } from "../../utils/constants";
 import { SketchPicker } from "react-color";
+import { openPopupWindow } from "../../utils/helpers";
 
 type SettingFormDataType = DefaultSettingsType;
 
@@ -244,7 +245,10 @@ export default function SettingForm({ setShowSetting }: { setShowSetting: React.
                   <div className="inline-block">
                     <span className="text-[rgb(85,85,85)] font-bold flex items-center">پنجره کوچک</span>
                   </div>
-                  <button className="flex items-center justify-center text-center rounded-[4px] cursor-pointer opacity-[0.9] text-[14px] py-2 px-3 min-w-[70px] bg-white text-[85,85,85] border border-[rgb(224,224,224)] font-normal shadow-sm">
+                  <button
+                    onClick={() => openPopupWindow("/", "Popup Title", 400, 600)}
+                    className="flex items-center justify-center text-center rounded-[4px] cursor-pointer opacity-[0.9] text-[14px] py-2 px-3 min-w-[70px] bg-white text-[85,85,85] border border-[rgb(224,224,224)] font-normal shadow-sm"
+                  >
                     <img src="https://pomofocus.io/icons/external-link.svg" alt="" className="w-3 ml-1 opacity-[0.7]" />
                     باز کردن
                   </button>

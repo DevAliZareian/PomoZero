@@ -22,7 +22,7 @@ export default function ModeProvider({ children }: PropsWithChildren) {
     return Number(storedCounter) || 1;
   });
 
-  const color = settings[`${mode}Color`]; // Dynamically fetch color based on the current mode
+  const color = settings[`${mode}Color`];
   const initialTime = settings[mode];
 
   const nextMode = () => {

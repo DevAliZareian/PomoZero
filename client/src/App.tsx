@@ -13,6 +13,7 @@ import Main from "./components/interface/Main";
 import Container from "./components/interface/Container";
 import SettingForm from "./components/setting/SettingForm";
 import { useState } from "react";
+import TimeStats from "./components/tools/TimeStats";
 
 function App() {
   const { taskForm } = useTasks();
@@ -32,6 +33,7 @@ function App() {
         <TasksSection>
           <TasksList />
           {taskForm.show && !taskForm.editor ? <TaskForm /> : <AddTask />}
+          <TimeStats />
         </TasksSection>
       </Main>
     </Container>

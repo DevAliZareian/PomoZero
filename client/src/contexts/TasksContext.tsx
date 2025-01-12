@@ -21,6 +21,7 @@ type ContextValue = {
   clearTasks: () => void;
   removeCompletedTasks: () => void;
   clearActPomodoros: () => void;
+  getPomodorosSum: (type: "pomodoros" | "actPomodoros") => number;
 };
 
 const TasksContext = createContext<ContextValue | undefined>(undefined);
@@ -67,10 +68,21 @@ export function TasksProvider({ children }: PropsWithChildren) {
     return tasks.find((task) => task.isActive);
   }
 
+  function reorderTasks(tasks: Task[], autoSwitchTasks: boolean): Task[] {
+    if (!autoSwitchTasks) return tasks;
+
+    const completedTasks = tasks.filter((task) => task.isCompleted);
+    const incompleteTasks = tasks.filter((task) => !task.isCompleted);
+    return [...incompleteTasks, ...completedTasks];
+  }
+
   function toggleTaskCompletion(id: number) {
     const updatedTasks = tasks.map((task) => (task.id === id ? { ...task, isCompleted: !task.isCompleted } : task));
-    setTasks(updatedTasks);
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+
+    const reorderedTasks = reorderTasks(updatedTasks, settings.autoSwitchTasks);
+
+    setTasks(reorderedTasks);
+    localStorage.setItem("tasks", JSON.stringify(reorderedTasks));
   }
 
   function updateActPomodoros(id: number) {
@@ -80,20 +92,21 @@ export function TasksProvider({ children }: PropsWithChildren) {
       if (task.id === id) {
         const newActPomodoros = (Number(task.actPomodoros) || 0) + 1;
 
-        if (settings.autoCheckTasks && newActPomodoros == task.pomodoros) {
-          toggleTaskCompletion(task.id);
-        }
+        const isCompleted = settings.autoCheckTasks && newActPomodoros >= task.pomodoros ? true : task.isCompleted;
 
         return {
           ...task,
           actPomodoros: newActPomodoros,
+          isCompleted,
         };
       }
       return task;
     });
 
-    setTasks(updatedTasks);
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+    const reorderedTasks = reorderTasks(updatedTasks, settings.autoSwitchTasks);
+
+    setTasks(reorderedTasks);
+    localStorage.setItem("tasks", JSON.stringify(reorderedTasks));
   }
 
   function clearTasks() {
@@ -113,6 +126,12 @@ export function TasksProvider({ children }: PropsWithChildren) {
     localStorage.setItem("tasks", JSON.stringify(updatedTasks));
   }
 
+  function getPomodorosSum(type: "pomodoros" | "actPomodoros"): number {
+    return tasks.reduce((sum, task) => {
+      return sum + (Number(task[type]) || 0);
+    }, 0);
+  }
+
   const value: ContextValue = {
     tasks,
     addTask,
@@ -127,6 +146,7 @@ export function TasksProvider({ children }: PropsWithChildren) {
     clearTasks,
     removeCompletedTasks,
     clearActPomodoros,
+    getPomodorosSum,
   };
 
   return <TasksContext.Provider value={value}>{children}</TasksContext.Provider>;
