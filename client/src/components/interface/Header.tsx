@@ -2,7 +2,7 @@ import ProgressBar from "../tools/ProgressBar";
 
 export default function Header({ setShowSetting }: { setShowSetting: React.Dispatch<React.SetStateAction<boolean>> }) {
   return (
-    <header className="relative w-full text-white border-b border-b-[rgba(0,0,0,0.1)] pb-2">
+    <header className="relative w-full text-white border-b border-b-[rgba(0,0,0,0.1)] pb-2 max-w-screen-md">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1 ">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-7">
