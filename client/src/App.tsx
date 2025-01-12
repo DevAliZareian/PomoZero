@@ -18,9 +18,10 @@ import TimeStats from "./components/tools/TimeStats";
 function App() {
   const { taskForm } = useTasks();
   const [showSetting, setShowSetting] = useState<boolean>(false);
+  const [showTasksOption, setShowTasksOption] = useState<boolean>(false);
 
   return (
-    <Container>
+    <Container setShowTasksOption={setShowTasksOption}>
       {showSetting && <SettingForm setShowSetting={setShowSetting} />}
       <Header setShowSetting={setShowSetting} />
       <Main>
@@ -30,7 +31,7 @@ function App() {
           <Start />
         </Box>
         <ActiveTask />
-        <TasksSection>
+        <TasksSection setShowTasksOption={setShowTasksOption} showTasksOption={showTasksOption}>
           <TasksList />
           {taskForm.show && !taskForm.editor ? <TaskForm /> : <AddTask />}
           <TimeStats />

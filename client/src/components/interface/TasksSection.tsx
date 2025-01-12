@@ -1,11 +1,15 @@
-import { PropsWithChildren, useState } from "react";
+import React, { PropsWithChildren } from "react";
 import { useTasks } from "../../contexts/TasksContext";
 import { useDarkMode } from "../../hooks/useDarkMode";
 
-export default function TasksSection({ children }: PropsWithChildren) {
+type TasksSectionProps = {
+  setShowTasksOption: React.Dispatch<React.SetStateAction<boolean>>;
+  showTasksOption: boolean;
+};
+
+export default function TasksSection({ children, setShowTasksOption, showTasksOption }: PropsWithChildren<TasksSectionProps>) {
   const isDarkMode = useDarkMode();
 
-  const [showTasksOption, setShowTasksOption] = useState<boolean>(false);
   const { clearTasks, clearActPomodoros, removeCompletedTasks } = useTasks();
   return (
     <>
@@ -13,7 +17,7 @@ export default function TasksSection({ children }: PropsWithChildren) {
         <footer className="w-full flex flex-col items-center justify-center text-white mt-5 mb-11">
           <div className="w-full flex items-center justify-between border-b-2 pb-3 border-b-white">
             <p className="text-lg font-bold">وظایف</p>
-            <div className="relative">
+            <div onClick={(e) => e.stopPropagation()} className="relative">
               <button
                 onClick={() => setShowTasksOption(!showTasksOption)}
                 className="flex items-center justify-center text-center rounded-[4px] cursor-pointer opacity-[0.9] bg-[rgba(255,255,255,0.2)] shadow-none mr-[10px] text-[13px] border-none text-white p-2 min-w-[auto]"
