@@ -3,7 +3,6 @@ import { useTasks } from "../contexts/TasksContext";
 import { useMode } from "../contexts/ModeContext";
 import { useSetting } from "../contexts/SettingContext";
 
-// Define the return type for the hook
 interface PomodoroTimeStats {
   endTime: string;
   timeDifference: number;

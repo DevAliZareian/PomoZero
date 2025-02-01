@@ -1,4 +1,4 @@
-import React, { createContext, PropsWithChildren, useContext, useState } from "react";
+import React, { createContext, PropsWithChildren, useContext, useState, useMemo, useCallback } from "react";
 import { Mode } from "../utils/types";
 import { useSetting } from "./SettingContext";
 
@@ -17,15 +17,16 @@ const ModeContext = createContext<ModeContextTypes | undefined>(undefined);
 export default function ModeProvider({ children }: PropsWithChildren) {
   const { settings } = useSetting();
   const [mode, setMode] = useState<Mode>("work");
+
   const [pomodoroCounter, setPomodoroCounter] = useState<number>(() => {
-    const storedCounter = localStorage.getItem("pomodoroCounter");
-    return Number(storedCounter) || 1;
+    const storedCounter = Number(localStorage.getItem("pomodoroCounter"));
+    return isNaN(storedCounter) ? 1 : storedCounter;
   });
 
   const color = settings[`${mode}Color`];
   const initialTime = settings[mode];
 
-  const nextMode = () => {
+  const nextMode = useCallback(() => {
     setMode((prevMode) => {
       if (prevMode === "work") {
         const newCounter = pomodoroCounter + 1;
@@ -34,29 +35,27 @@ export default function ModeProvider({ children }: PropsWithChildren) {
 
         return newCounter % settings.longBreakInterval === 0 ? "longRest" : "shortRest";
       }
-
-      if (prevMode === "shortRest" || prevMode === "longRest") {
-        return "work";
-      }
-
-      return prevMode;
+      return "work";
     });
-  };
+  }, [pomodoroCounter, settings.longBreakInterval]);
 
-  function resetPomodoroCounter() {
+  const resetPomodoroCounter = useCallback(() => {
     setPomodoroCounter(1);
     localStorage.setItem("pomodoroCounter", "1");
-  }
+  }, []);
 
-  const value = {
-    mode,
-    color,
-    initialTime,
-    pomodoroCounter,
-    resetPomodoroCounter,
-    setMode,
-    nextMode,
-  };
+  const value = useMemo(
+    () => ({
+      mode,
+      color,
+      initialTime,
+      pomodoroCounter,
+      resetPomodoroCounter,
+      setMode,
+      nextMode,
+    }),
+    [mode, color, initialTime, pomodoroCounter, resetPomodoroCounter, nextMode]
+  );
 
   return <ModeContext.Provider value={value}>{children}</ModeContext.Provider>;
 }

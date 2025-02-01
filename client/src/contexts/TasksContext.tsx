@@ -4,7 +4,13 @@ import { useSetting } from "./SettingContext";
 
 type TaskFormType = {
   show: boolean;
-  editor?: { id: number; title: string; pomodoros: number; note?: string; actPomodoros?: number } | null;
+  editor?: {
+    id: number;
+    title: string;
+    pomodoros: number;
+    note?: string;
+    actPomodoros?: number;
+  } | null;
 };
 
 type ContextValue = {
@@ -15,7 +21,7 @@ type ContextValue = {
   setTaskActive: (id: number) => void;
   getActiveTask: () => Task | undefined;
   toggleTaskCompletion: (id: number) => void;
-  updateActPomodoros: (id: number, actPomodoros?: number) => void;
+  updateActPomodoros: (id: number) => void;
   taskForm: TaskFormType;
   setTaskForm: React.Dispatch<React.SetStateAction<TaskFormType>>;
   clearTasks: () => void;
@@ -27,110 +33,91 @@ type ContextValue = {
 const TasksContext = createContext<ContextValue | undefined>(undefined);
 
 export function TasksProvider({ children }: PropsWithChildren) {
+  const { settings } = useSetting();
+
   const [tasks, setTasks] = useState<Task[]>(() => {
     const savedTasks = localStorage.getItem("tasks");
     return savedTasks ? JSON.parse(savedTasks) : [];
   });
-  const [taskForm, setTaskForm] = useState<TaskFormType>({ show: false, editor: null });
-  const { settings } = useSetting();
 
-  function addTask(title: string, pomodoros: number, note?: string) {
+  const [taskForm, setTaskForm] = useState<TaskFormType>({ show: false, editor: null });
+
+  const persistTasks = (updatedTasks: Task[]) => {
+    setTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+  };
+
+  const reorderTasks = (updatedTasks: Task[]): Task[] => {
+    if (!settings.autoSwitchTasks) return updatedTasks;
+
+    const completed = updatedTasks.filter((task) => task.isCompleted);
+    const incomplete = updatedTasks.filter((task) => !task.isCompleted);
+
+    return [...incomplete, ...completed];
+  };
+
+  const addTask = (title: string, pomodoros: number, note?: string) => {
     if (!title) return;
 
-    const newTask: Task = { id: Date.now(), title, note, pomodoros, isActive: false };
-    const updatedTasks = [...tasks, newTask];
-    setTasks(updatedTasks);
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+    const newTask: Task = {
+      id: Date.now(),
+      title,
+      pomodoros,
+      note,
+      isActive: false,
+    };
+    persistTasks([...tasks, newTask]);
     setTaskForm({ show: false });
-  }
+  };
 
-  function removeTask(id: number) {
-    const updatedTasks = tasks.filter((task) => task.id !== id);
-    setTasks(updatedTasks);
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+  const removeTask = (id: number) => {
+    persistTasks(tasks.filter((task) => task.id !== id));
     setTaskForm({ show: false });
-  }
+  };
 
-  function editTask(id: number, title: string, pomodoros: number, note?: string, actPomodoros?: number) {
+  const editTask = (id: number, title: string, pomodoros: number, note?: string, actPomodoros?: number) => {
     const updatedTasks = tasks.map((task) => (task.id === id ? { ...task, title, pomodoros, note, actPomodoros } : task));
-    setTasks(updatedTasks);
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+    persistTasks(updatedTasks);
     setTaskForm({ show: false });
-  }
+  };
 
-  function setTaskActive(id: number) {
-    const updatedTasks = tasks.map((task) => (task.id === id ? { ...task, isActive: true } : { ...task, isActive: false }));
-    setTasks(updatedTasks);
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
-  }
+  const setTaskActive = (id: number) => {
+    persistTasks(tasks.map((task) => ({ ...task, isActive: task.id === id })));
+  };
 
-  function getActiveTask() {
-    return tasks.find((task) => task.isActive);
-  }
+  const getActiveTask = () => tasks.find((task) => task.isActive);
 
-  function reorderTasks(tasks: Task[], autoSwitchTasks: boolean): Task[] {
-    if (!autoSwitchTasks) return tasks;
-
-    const completedTasks = tasks.filter((task) => task.isCompleted);
-    const incompleteTasks = tasks.filter((task) => !task.isCompleted);
-    return [...incompleteTasks, ...completedTasks];
-  }
-
-  function toggleTaskCompletion(id: number) {
+  const toggleTaskCompletion = (id: number) => {
     const updatedTasks = tasks.map((task) => (task.id === id ? { ...task, isCompleted: !task.isCompleted } : task));
+    persistTasks(reorderTasks(updatedTasks));
+  };
 
-    const reorderedTasks = reorderTasks(updatedTasks, settings.autoSwitchTasks);
-
-    setTasks(reorderedTasks);
-    localStorage.setItem("tasks", JSON.stringify(reorderedTasks));
-  }
-
-  function updateActPomodoros(id: number) {
-    if (!id) return;
-
+  const updateActPomodoros = (id: number) => {
     const updatedTasks = tasks.map((task) => {
-      if (task.id === id) {
-        const newActPomodoros = (Number(task.actPomodoros) || 0) + 1;
+      if (task.id !== id) return task;
 
-        const isCompleted = settings.autoCheckTasks && newActPomodoros >= task.pomodoros ? true : task.isCompleted;
+      const newActPomodoros = (task.actPomodoros || 0) + 1;
+      const isCompleted = settings.autoCheckTasks && newActPomodoros >= task.pomodoros ? true : task.isCompleted;
 
-        return {
-          ...task,
-          actPomodoros: newActPomodoros,
-          isCompleted,
-        };
-      }
-      return task;
+      return { ...task, actPomodoros: newActPomodoros, isCompleted };
     });
+    persistTasks(reorderTasks(updatedTasks));
+  };
 
-    const reorderedTasks = reorderTasks(updatedTasks, settings.autoSwitchTasks);
-
-    setTasks(reorderedTasks);
-    localStorage.setItem("tasks", JSON.stringify(reorderedTasks));
-  }
-
-  function clearTasks() {
+  const clearTasks = () => {
     localStorage.removeItem("tasks");
     setTasks([]);
-  }
+  };
 
-  function removeCompletedTasks() {
-    const updatedTasks = tasks.filter((task) => !task.isCompleted);
-    setTasks(updatedTasks);
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
-  }
+  const removeCompletedTasks = () => {
+    persistTasks(tasks.filter((task) => !task.isCompleted));
+  };
 
-  function clearActPomodoros() {
-    const updatedTasks = tasks.map((task) => ({ ...task, actPomodoros: 0 }));
-    setTasks(updatedTasks);
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
-  }
+  const clearActPomodoros = () => {
+    persistTasks(tasks.map((task) => ({ ...task, actPomodoros: 0 })));
+  };
 
-  function getPomodorosSum(type: "pomodoros" | "actPomodoros"): number {
-    return tasks.reduce((sum, task) => {
-      return sum + (Number(task[type]) || 0);
-    }, 0);
-  }
+  const getPomodorosSum = (type: "pomodoros" | "actPomodoros"): number => tasks.reduce((sum, task) => sum + (task[type] || 0), 0);
 
   const value: ContextValue = {
     tasks,
