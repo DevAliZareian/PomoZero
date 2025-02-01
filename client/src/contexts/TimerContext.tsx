@@ -44,7 +44,20 @@ export const TimerProvider = ({ children }: PropsWithChildren) => {
   const decrementTime = useCallback(() => {
     setTime((prevTime) => {
       if (prevTime <= 1) {
+<<<<<<< Updated upstream
         handleTimerEnd();
+=======
+        setIsActive(false);
+        sendNotification("پوموزیرو", "وقت تمومه!");
+        setTimeout(() => {
+          if (mode === "work" && activeTaskId) {
+            updateActPomodoros(activeTaskId);
+          }
+          nextMode();
+        }, 0);
+
+        resetTimer();
+>>>>>>> Stashed changes
         return 0;
       }
       return prevTime - 1;
