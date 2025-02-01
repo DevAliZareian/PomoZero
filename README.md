@@ -15,10 +15,17 @@ A **React-based Pomodoro Timer** designed to help users enhance productivity by 
 
 ## Technologies
 
-- React.js
-- Context API
+- React
+- React Hooks
+- React Context API
 - Tailwind CSS
 - TypeScript
+
+
+## Packages
+
+- react-hook-form
+- react-color
 
 
 ## Installation
