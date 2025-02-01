@@ -6,9 +6,10 @@ import { useSetting } from "../../../contexts/SettingContext";
 type FormProps = {
   handleSubmit: UseFormHandleSubmit<DefaultSettingsType, undefined>;
   setShowSetting: React.Dispatch<React.SetStateAction<boolean>>;
+  handleReset: () => void;
 };
 
-export default function Form({ children, handleSubmit, setShowSetting }: PropsWithChildren<FormProps>) {
+export default function Form({ children, handleSubmit, setShowSetting, handleReset }: PropsWithChildren<FormProps>) {
   const { updateSettings } = useSetting();
 
   const formatTime = (time: string) => `00:${String(time).padStart(2, "0")}:00`;
@@ -38,7 +39,22 @@ export default function Form({ children, handleSubmit, setShowSetting }: PropsWi
         />
         <div className="relative max-w-3xl m-auto">
           <h2 className="text-[15px] text-[rgb(170,170,170)] font-bold py-[16px] px-[23px] border-b border-b-[rgb(238,238,238)] text-center">تنظیمات</h2>
-          {children}
+          <div className="px-5">{children}</div>
+
+          <div className="flex items-center justify-end gap-2 w-full py-[14px] px-5 text-left rounded-b-lg bg-[rgb(239,239,239)]">
+            <button
+              onClick={handleReset}
+              className="flex items-center justify-center text-center rounded-[4px] cursor-pointer opacity-[0.9] text-[14px] py-[8px] px-[12px] text-[rgb(136,136,136)] font-bold"
+            >
+              تنظیمات پیش‌فرض
+            </button>
+            <button
+              type="submit"
+              className="flex items-center justify-center text-center rounded-[4px] cursor-pointer shadow text-white py-[8px] px-[12px] text-[14px] bg-[rgb(34,34,34)] border-2 border-[rgb(34,34,34)]"
+            >
+              ذخیره
+            </button>
+          </div>
         </div>
       </form>
     </div>

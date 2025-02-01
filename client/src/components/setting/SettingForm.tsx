@@ -20,28 +20,10 @@ export default function SettingForm({ setShowSetting }: { setShowSetting: React.
   };
 
   return (
-    <Form setShowSetting={setShowSetting} handleSubmit={handleSubmit}>
-      <div className="px-5">
-        <TimeSettings register={register} control={control} />
-        <div className="h-[1px] w-full bg-[rgb(233,233,233)]"></div>
-        <TasksSettings control={control} />
-        <div className="h-[1px] w-full bg-[rgb(233,233,233)]"></div>
-        <ThemeSettings control={control} setValue={setValue} />
-      </div>
-      <div className="flex items-center justify-end gap-2 w-full py-[14px] px-5 text-left rounded-b-lg bg-[rgb(239,239,239)]">
-        <button
-          onClick={handleReset}
-          className="flex items-center justify-center text-center rounded-[4px] cursor-pointer opacity-[0.9] text-[14px] py-[8px] px-[12px] text-[rgb(136,136,136)] font-bold"
-        >
-          تنظیمات پیش‌فرض
-        </button>
-        <button
-          type="submit"
-          className="flex items-center justify-center text-center rounded-[4px] cursor-pointer shadow text-white py-[8px] px-[12px] text-[14px] bg-[rgb(34,34,34)] border-2 border-[rgb(34,34,34)]"
-        >
-          ذخیره
-        </button>
-      </div>
+    <Form setShowSetting={setShowSetting} handleSubmit={handleSubmit} handleReset={handleReset}>
+      <TimeSettings register={register} control={control} />
+      <TasksSettings control={control} />
+      <ThemeSettings control={control} setValue={setValue} />
     </Form>
   );
 }

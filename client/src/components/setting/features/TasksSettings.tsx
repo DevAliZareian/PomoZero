@@ -27,6 +27,7 @@ export default function TasksSettings({ control }: { control: Control<DefaultSet
           </div>
         </div>
       </div>
+      <div className="h-[1px] w-full bg-[rgb(233,233,233)]"></div>
     </>
   );
 }

@@ -74,6 +74,7 @@ export default function TimeSettings({ register, control }: TimeSettingsProp) {
           </div>
         </div>
       </div>
+      <div className="h-[1px] w-full bg-[rgb(233,233,233)]"></div>
     </>
   );
 }
